@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Lab5.Models;
 
-namespace Lab5.Controllers
+namespace identityframework.Controllers
 {
     public class HomeController : Controller
     {

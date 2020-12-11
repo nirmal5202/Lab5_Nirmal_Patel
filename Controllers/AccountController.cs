@@ -1,18 +1,18 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
 //Make sure you have the following imports
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Lab5.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
-namespace Lab5.Controllers
+namespace identityframework.Controllers
+
 {
     public class AccountController : Controller
     {
@@ -34,6 +34,8 @@ namespace Lab5.Controllers
             _signInManager = signInManager;
             _logger = logger;
         }
+
+
 
         #region Helpers
 
@@ -58,6 +60,7 @@ namespace Lab5.Controllers
         }
 
         #endregion
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -102,7 +105,6 @@ namespace Lab5.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-
 
         [HttpPost]
         [AllowAnonymous]
@@ -151,6 +153,56 @@ namespace Lab5.Controllers
             _logger.LogInformation("User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        /* 
+         * // I couldnt get Google Authontication working
+
+        [AllowAnonymous]
+        public IActionResult GoogleLogin()
+        {
+            string redirectUrl = Url.Action("GoogleResponse", "Account");
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction(nameof(Login));
+
+            var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+            string[] userInfo = { info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value };
+            if (result.Succeeded)
+                return View(userInfo);
+            else
+            {
+                AppUser user = new AppUser
+                {
+                    Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value
+                };
+
+                IdentityResult identResult = await userManager.CreateAsync(user);
+                if (identResult.Succeeded)
+                {
+                    identResult = await userManager.AddLoginAsync(user, info);
+                    if (identResult.Succeeded)
+                    {
+                        await signInManager.SignInAsync(user, false);
+                        return View(userInfo);
+                    }
+                }
+                return AccessDenied();
+            }
+        }
+        */
 
     }
 }

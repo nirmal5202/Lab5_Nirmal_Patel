@@ -2,7 +2,7 @@
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @model LoginViewModel
-@inject SignInManager<MainUser> SignInManager
+@inject SignInManager<AppUser> SignInManager
 @{
     ViewData["Title"] = "Log in";
 }
@@ -34,6 +34,7 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default">Log in</button>
+                    <!--<a class="btn btn-info" asp-action="GoogleLogin">Log In With Google</a>-->
                 </div>
                 <div class="form-group">
                     <p>

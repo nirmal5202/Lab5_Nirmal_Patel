@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+//Make sure you make the following imports (AFTER dbcontext and model have been created).
+using Lab5.Data;
+using Lab5.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Identity;
-using Lab5.Models;
-using Lab5.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
-
-namespace Lab5
+namespace identityframework
 {
     public class Startup
     {
@@ -30,6 +30,7 @@ namespace Lab5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Default.
             services.AddControllersWithViews();
             //Added by me.
             services.AddRazorPages();
@@ -43,11 +44,24 @@ namespace Lab5
 
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
+            /*
+            // Google service
+            
+            services.AddAuthentication()
+                .AddGoogle(opts  =>
+                {
+                    opts.ClientId = "946190543560-7j3q279eedskqvqqc0m6si94v7iolq2g.apps.googleusercontent.com";
+                    opts.ClientSecret = "4-6qTWWHQub_uEErYEeOHCit";
+                    opts.SignInScheme = IdentityConstants.ExternalScheme;
+                });
+            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            //Default.
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,14 +72,17 @@ namespace Lab5
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Default.
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
+            app.UseAuthorization();
 
             //Added by me.
             app.UseMvcWithDefaultRoute();
-            app.UseAuthorization();
+            //Added AFTER model and dbcontext have been created.
+            app.UseAuthentication();
 
             /*
              * 
@@ -81,6 +98,8 @@ namespace Lab5
 
             */
 
+
+            //Default.
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
